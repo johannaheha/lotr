@@ -1,4 +1,5 @@
 import { volumes } from "@/resources/lib/data";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Page({
@@ -35,10 +36,19 @@ export default async function Page({
           <ul>
             {volume.books.map((book, index) => (
               <li key={index}>
-                {book.ordinal};{book.title}
+                <b> {book.ordinal}</b>
+                <p></p>
+                {book.title}
               </li>
             ))}
           </ul>
+          <Image
+            src={volume.cover}
+            height={230}
+            width={140}
+            alt={volume.cover}
+          />
+
           <p>
             {index === 0 && (
               <Link href={"/volumes/" + volumes[index + 1].slug}>Next</Link>
@@ -50,10 +60,12 @@ export default async function Page({
                 <Link href={"/volumes/" + volumes[index - 1].slug}>
                   Previous
                 </Link>
+                {" | "}
                 <Link href={"/volumes/" + volumes[index + 1].slug}>Next</Link>
               </>
             )}
           </p>
+
           <p>
             {index === volumes.length - 1 && (
               <Link href={"/volumes/" + volumes[index - 1].slug}>Previous</Link>
