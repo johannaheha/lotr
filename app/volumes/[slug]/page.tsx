@@ -2,6 +2,21 @@ import { volumes } from "@/resources/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
+//app-router (brandnew next.js-ding, params ehemals router.query, jetz SSR)
+
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  return {
+    title: slug,
+  };
+}
+
 export default async function Page({
   params,
 }: {
@@ -51,24 +66,24 @@ export default async function Page({
 
           <p>
             {index === 0 && (
-              <Link href={"/volumes/" + volumes[index + 1].slug}>Next</Link>
+              <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
             )}
           </p>
           <p>
             {index > 0 && index < volumes.length - 1 && (
               <>
-                <Link href={"/volumes/" + volumes[index - 1].slug}>
+                <Link href={`/volumes/${volumes[index - 1].slug}`}>
                   Previous
                 </Link>
                 {" | "}
-                <Link href={"/volumes/" + volumes[index + 1].slug}>Next</Link>
+                <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
               </>
             )}
           </p>
 
           <p>
             {index === volumes.length - 1 && (
-              <Link href={"/volumes/" + volumes[index - 1].slug}>Previous</Link>
+              <Link href={`/volumes/${volumes[index - 1].slug}`}>Previous</Link>
             )}
           </p>
         </main>

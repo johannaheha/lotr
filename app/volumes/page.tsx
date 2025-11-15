@@ -2,6 +2,7 @@ import Link from "next/link";
 import { introduction } from "../../resources/lib/data";
 import { volumes } from "../../resources/lib/data";
 
+
 export default function PageVolume() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
