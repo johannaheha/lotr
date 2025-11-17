@@ -2,27 +2,33 @@ import { volumes } from "@/resources/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
 //app-router (brandnew next.js-ding, params ehemals router.query, jetz SSR)
 
-import { Metadata } from "next";
+type VolumeParamsPromise = Promise<{ slug: string }>;
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: VolumeParamsPromise;
 }): Promise<Metadata> {
   const { slug } = await params;
+
+  const volume = volumes.find((volume) => volume.slug === slug);
+
   return {
-    title: slug,
+    title: volume ? volume.title : "Volume Not Found",
   };
 }
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: VolumeParamsPromise;
 }) {
   const { slug } = await params;
+
   const volume = volumes.find((volume) => volume.slug === slug);
   const index = volumes.findIndex((volume) => volume.slug === slug);
 
@@ -38,56 +44,46 @@ export default async function Page({
       </div>
     );
   }
+
   return (
-    console.log(volumes[2].slug),
-    (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-        <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-          <Link href="/volumes">Back to Volumes</Link>
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            {volume.title}
-          </h1>
-          <p>{volume.description}</p>
-          <ul>
-            {volume.books.map((book, index) => (
-              <li key={index}>
-                <b> {book.ordinal}</b>
-                <p></p>
-                {book.title}
-              </li>
-            ))}
-          </ul>
-          <Image
-            src={volume.cover}
-            height={230}
-            width={140}
-            alt={volume.cover}
-          />
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Link href="/volumes">Back to Volumes</Link>
+        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+          {volume.title}
+        </h1>
+        <p>{volume.description}</p>
+        <ul>
+          {volume.books.map((book, index) => (
+            <li key={index}>
+              <b>{book.ordinal}</b>
+              <p>{book.title}</p>
+            </li>
+          ))}
+        </ul>
+        <Image src={volume.cover} height={230} width={140} alt={volume.cover} />
 
-          <p>
-            {index === 0 && (
-              <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
-            )}
-          </p>
-          <p>
-            {index > 0 && index < volumes.length - 1 && (
-              <>
-                <Link href={`/volumes/${volumes[index - 1].slug}`}>
-                  Previous
-                </Link>
-                {" | "}
-                <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
-              </>
-            )}
-          </p>
-
-          <p>
-            {index === volumes.length - 1 && (
+        <p>
+          {index === 0 && (
+            <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
+          )}
+        </p>
+        <p>
+          {index > 0 && index < volumes.length - 1 && (
+            <>
               <Link href={`/volumes/${volumes[index - 1].slug}`}>Previous</Link>
-            )}
-          </p>
-        </main>
-      </div>
-    )
+              {" | "}
+              <Link href={`/volumes/${volumes[index + 1].slug}`}>Next</Link>
+            </>
+          )}
+        </p>
+
+        <p>
+          {index === volumes.length - 1 && (
+            <Link href={`/volumes/${volumes[index - 1].slug}`}>Previous</Link>
+          )}
+        </p>
+      </main>
+    </div>
   );
 }
